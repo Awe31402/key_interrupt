@@ -22,18 +22,23 @@ static void got_char(struct work_struct *work)
 
 	scancode = inb(0x60);
 	status = inb(0x64);
-	printk(KERN_INFO "[%s] LINE %d: Scan code %x %s ,count: %d\n",
+	printk(KERN_INFO "[%s] LINE %d: Scan code %x %s\n",
 			__func__,
 			__LINE__,
 			scancode & 0x7f, 
-			(scancode & 0x80)? "Released" : "Pressed",
-			count);
+			(scancode & 0x80)? "Released" : "Pressed");
+	printk(KERN_INFO "[%s] LINE %d : jiffies = %ld, count = %d\n",
+			__func__, __LINE__,
+			jiffies, count);
 }
 
 static irqreturn_t irq_handler(int irq, void *dev_id)
 {
-	struct work_struct task;
 	count++;
+	printk(KERN_INFO "[%s] LINE %d : jiffies = %ld, count = %d\n",
+		       	__func__,
+			__LINE__,
+			jiffies, count);
 	queue_work(key_work_queue, &key_work);
 
 	return IRQ_HANDLED;
